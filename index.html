@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="version" content="1.0.3-1000002">
+<meta name="version" content="1.0.4-1000003">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>QR 工作室 — 生成与品牌二维码</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -451,7 +451,7 @@ function getStdData(){
     case 'text':return document.getElementById('in-text').value;
     case 'wifi':{const s=document.getElementById('wifi-ssid').value.trim();if(!s)return'';return`WIFI:T:${document.getElementById('wifi-enc').value};S:${s};P:${document.getElementById('wifi-pass').value};H:${document.getElementById('wifi-hidden').checked?'true':''};`}
     case 'email':{const to=document.getElementById('em-to').value.trim();if(!to)return'';return`mailto:${to}?subject=${encodeURIComponent(document.getElementById('em-sub').value)}&body=${encodeURIComponent(document.getElementById('em-body').value)}`}
-    case 'phone':{const ph=document.getElementById('in-phone').value.trim().replace(/[\s\-\(\)]/g,'');return ph?`tel:${document.getElementById('ph-cc').value}${ph}`:'';}
+    case 'phone':{const ph=document.getElementById('in-phone').value.trim().replace(/[\s\-\(\)]/g,'');return ph?`${location.origin}${location.pathname}?call=${encodeURIComponent(ph)}`:'';}
     case 'sms':{const ph=document.getElementById('sms-phone').value.trim().replace(/[\s\-\(\)]/g,'');if(!ph)return'';const msg=document.getElementById('sms-msg').value;return msg?`sms:${document.getElementById('sms-cc').value}${ph}?body=${encodeURIComponent(msg)}`:`sms:${document.getElementById('sms-cc').value}${ph}`}
     case 'whatsapp':{const cc=document.getElementById('wa-cc').value.replace('+',''),ph=document.getElementById('wa-phone').value.trim().replace(/[^0-9]/g,'');if(!ph)return'';const msg=document.getElementById('wa-msg').value.trim();let u=`https://wa.me/${cc}${ph}`;if(msg)u+=`?text=${encodeURIComponent(msg)}`;return u}
     case 'location':{const la=document.getElementById('loc-lat').value.trim(),ln=document.getElementById('loc-lng').value.trim(),n=document.getElementById('loc-name').value.trim();if(la&&ln)return`geo:${la},${ln}`;if(n)return`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(n)}`;return''}
