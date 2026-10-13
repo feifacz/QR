@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="version" content="2.0.0-20261013">
+<meta name="version" content="2.0.1-20261013">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>QR 工作室 — 极简二维码生成与美化</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,86 +19,80 @@ html{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 body{min-height:100dvh;display:flex;flex-direction:column}
 input,select,textarea,button{font-family:inherit;font-size:inherit}
 ::selection{background:var(--accent);color:#fff}
-.shell{max-width:760px;margin:0 auto;padding:24px 20px 60px;width:100%}
-.hdr{text-align:center;padding:40px 0 28px;position:relative}
-.hdr h1{font-family:'JetBrains Mono',monospace;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600;letter-spacing:-.04em;margin-bottom:6px}
+.shell{max-width:680px;margin:0 auto;padding:24px 20px 60px;width:100%}
+.hdr{text-align:center;padding:36px 0 24px;position:relative}
+.hdr h1{font-family:'JetBrains Mono',monospace;font-size:clamp(1.5rem,4vw,2rem);font-weight:600;letter-spacing:-.04em;margin-bottom:6px}
 .hdr h1 span{color:var(--accent)}
-.hdr p{color:var(--text2);font-size:.88rem}
-.theme-toggle{position:absolute;top:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px;display:flex;gap:2px}
-.theme-toggle button{width:32px;height:32px;border:none;border-radius:50%;background:transparent;cursor:pointer;font-size:1rem;color:var(--text3);transition:all .2s;display:flex;align-items:center;justify-content:center}
+.hdr p{color:var(--text2);font-size:.86rem}
+.theme-toggle{position:absolute;top:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px;display:flex;gap:2px}
+.theme-toggle button{width:30px;height:30px;border:none;border-radius:50%;background:transparent;cursor:pointer;font-size:.9rem;color:var(--text3);transition:all .2s;display:flex;align-items:center;justify-content:center}
 .theme-toggle button.on{background:var(--accent);color:#fff}
 
-.type-pills{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px}
-.pill{padding:9px 18px;border-radius:24px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:.85rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .2s;user-select:none}
+.type-pills{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:2px}
+.pill{padding:8px 16px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:.82rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .2s;user-select:none}
 .pill:hover{color:var(--text);border-color:var(--text3)}
 .pill.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:18px;transition:background .3s,border-color .3s}
-.card-title{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:14px}
-.field{margin-bottom:14px}.field:last-child{margin-bottom:0}
-.field label{display:block;font-size:.8rem;color:var(--text2);margin-bottom:6px;font-weight:500}
-.inp{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px;color:var(--text);font-size:.88rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;transition:background .3s,border-color .3s}
+.card-title{font-size:.76rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:12px}
+.field{margin-bottom:12px}.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:.8rem;color:var(--text2);margin-bottom:5px;font-weight:500}
+.inp{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;color:var(--text);font-size:.86rem;outline:none;transition:border-color .2s,box-shadow .2s}
 .inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 .inp::placeholder{color:var(--text3)}
 .inp.invalid{border-color:var(--err)!important;box-shadow:0 0 0 3px rgba(239,68,68,.15)!important}
 .inp.valid{border-color:var(--ok)!important}
-textarea.inp{resize:vertical;min-height:75px}
+textarea.inp{resize:vertical;min-height:70px}
 select.inp{cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2371717a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
-input[type=color].inp{height:42px;padding:4px 6px;cursor:pointer}
+input[type=color].inp{height:38px;padding:3px 5px;cursor:pointer}
 .val-msg{font-size:.72rem;margin-top:4px;min-height:1em}.val-msg.err{color:var(--err)}.val-msg.ok{color:var(--ok)}.val-msg.warn{color:var(--warn)}
-.row{display:grid;gap:12px}.r2{grid-template-columns:1fr 1fr}.r3{grid-template-columns:1fr 1fr 1fr}
+.row{display:grid;gap:10px}.r2{grid-template-columns:1fr 1fr}.r3{grid-template-columns:1fr 1fr 1fr}
 
 .dp{display:none}.dp.on{display:block}
 
-.presets{display:flex;gap:8px;margin-top:10px}
-.preset{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);cursor:pointer;position:relative;overflow:hidden;flex-shrink:0;transition:transform .15s}
+/* 紧凑平铺样式选择器 */
+.style-grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:8px;margin-top:4px}
+.style-option{border:1px solid var(--border);background:var(--bg);border-radius:var(--radius);padding:7px 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .18s;user-select:none}
+.style-option:hover{border-color:var(--text3)}
+.style-option.on{border-color:var(--accent);background:var(--accent-glow);color:var(--accent);font-weight:600}
+.style-option .opt-icon{font-size:.95rem;line-height:1}
+.style-option .opt-title{font-size:.75rem;white-space:nowrap}
+
+.presets{display:flex;gap:8px;margin-top:8px}
+.preset{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);cursor:pointer;position:relative;overflow:hidden;flex-shrink:0;transition:transform .15s}
 .preset:hover{transform:scale(1.15)}
 .preset .fg{width:50%;height:100%;position:absolute;left:0;top:0}
 .contrast-warn{font-size:.74rem;color:var(--warn);margin-top:8px;display:none;align-items:center;gap:4px}
 .contrast-warn.show{display:flex}
 
-.dz{border:2px dashed var(--border);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:border-color .2s;color:var(--text3);position:relative}
+.dz{border:2px dashed var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;transition:border-color .2s;color:var(--text3);position:relative;font-size:.78rem}
 .dz:hover{border-color:var(--accent);color:var(--text2)}
 .dz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
-.logo-strip{display:flex;align-items:center;gap:10px;margin-top:10px;padding:8px 12px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border)}
-.logo-strip img{width:36px;height:36px;object-fit:contain;border-radius:6px;background:#fff;padding:2px}
-.logo-strip .remove{margin-left:auto;color:var(--err);cursor:pointer;font-size:.75rem}
+.logo-strip{display:flex;align-items:center;gap:8px;margin-top:8px;padding:6px 10px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border)}
+.logo-strip img{width:30px;height:30px;object-fit:contain;border-radius:6px;background:#fff;padding:2px}
+.logo-strip .remove{margin-left:auto;color:var(--err);cursor:pointer;font-size:.74rem}
 
-.preview-area{display:none;text-align:center;margin-top:10px}
-.preview-area.on{display:block}
-.qr-frame{display:inline-block;padding:16px;background:var(--qr-card-bg);border-radius:var(--radius-lg);box-shadow:0 8px 30px rgba(0,0,0,.15);margin-bottom:16px;max-width:100%}
-.qr-frame canvas{display:block;max-width:100%;height:auto;border-radius:8px}
-
-.link-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;margin-bottom:16px;display:none;align-items:center;gap:10px}
-.link-box.on{display:flex}
-.link-box .link-val{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.link-box .copy-btn{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.75rem;cursor:pointer;color:var(--text);flex-shrink:0}
-.link-box .copy-btn:hover{background:var(--surface2)}
+/* 预览卡片 */
+.preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;text-align:center}
+.qr-frame{display:inline-block;padding:14px;background:var(--qr-card-bg);border-radius:var(--radius-lg);box-shadow:0 6px 24px rgba(0,0,0,.15);margin-bottom:14px;max-width:100%}
+.qr-frame canvas{display:block;max-width:100%;height:auto;border-radius:6px}
 
 .dl-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.dl-btn{padding:10px 22px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:500;font-size:.85rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+.dl-btn{padding:9px 20px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg);color:var(--text);font-weight:500;font-size:.82rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
 .dl-btn:hover{background:var(--surface2);border-color:var(--text3)}
 .dl-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .dl-btn.primary:hover{opacity:.9}
-.dl-icon{width:16px;height:16px}
+.dl-icon{width:15px;height:15px}
 
-.chk{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--text2);cursor:pointer;user-select:none}
+.chk{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;color:var(--text2);cursor:pointer;user-select:none}
 .chk input{accent-color:var(--accent)}
-hr.sep{border:none;border-top:1px solid var(--border);margin:16px 0}
+hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
 
-.footer{text-align:center;padding:30px 0;color:var(--text3);font-size:.78rem;border-top:1px solid var(--border);margin-top:auto}
-
-/* Style preview thumbnails inside selects */
-.style-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:10px;margin-top:6px}
-.style-option{border:1px solid var(--border);background:var(--bg);border-radius:var(--radius);padding:10px 8px;cursor:pointer;text-align:center;transition:all .2s;user-select:none}
-.style-option:hover{border-color:var(--text3)}
-.style-option.on{border-color:var(--accent);background:var(--accent-glow);color:var(--accent);font-weight:600}
-.style-option .opt-icon{font-size:1.4rem;display:block;margin-bottom:4px}
-.style-option .opt-title{font-size:.78rem;display:block}
+.footer{text-align:center;padding:24px 0;color:var(--text3);font-size:.76rem;border-top:1px solid var(--border);margin-top:auto}
 
 @media(max-width:600px){
-  .shell{padding:16px 14px 48px}
-  .hdr{padding:28px 0 20px}
+  .shell{padding:16px 14px 40px}
+  .hdr{padding:24px 0 16px}
   .r2,.r3{grid-template-columns:1fr}
   .style-grid{grid-template-columns:1fr 1fr}
 }
@@ -113,10 +107,10 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:16px 0}
       <button class="on" onclick="setTheme('dark')" id="theme-dark">🌙</button>
     </div>
     <h1>QR <span>工作室</span></h1>
-    <p>极简经典二维码 · 支持个性化码点与角眼样式</p>
+    <p>极简二维码生成与美化</p>
   </div>
 
-  <!-- 类型选项卡 -->
+  <!-- 1. 类型选项卡 -->
   <div class="type-pills" id="type-pills">
     <div class="pill on" data-type="url">🌐 网址</div>
     <div class="pill" data-type="text">📝 文本</div>
@@ -124,7 +118,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:16px 0}
     <div class="pill" data-type="sms">💬 短信</div>
   </div>
 
-  <!-- 内容输入卡片 -->
+  <!-- 2. 内容输入卡片 -->
   <div class="card">
     <div class="card-title">输入内容</div>
     
@@ -168,17 +162,28 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:16px 0}
     </div>
   </div>
 
-  <!-- 编码内容栏 -->
-  <div class="link-box" id="std-link-box">
-    <div class="link-val" id="std-link-val"></div>
-    <button class="copy-btn" onclick="copyLink()">复制内容</button>
+  <!-- 3. 二维码实时预览与下载（紧跟在输入卡片下方！） -->
+  <div class="preview-card" id="std-preview-area">
+    <div class="qr-frame" id="std-frame">
+      <canvas id="std-canvas"></canvas>
+    </div>
+    <div class="dl-row">
+      <button class="dl-btn primary" onclick="dlStdPNG()">
+        <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        下载 PNG
+      </button>
+      <button class="dl-btn" onclick="shareStd()">
+        <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        分享
+      </button>
+    </div>
   </div>
 
-  <!-- 二维码美化卡片 -->
+  <!-- 4. 二维码美化卡片（位于二维码下方） -->
   <div class="card">
-    <div class="card-title">二维码美化</div>
+    <div class="card-title">样式与美化</div>
 
-    <!-- 码点样式选择器（截图图1、图2、图3） -->
+    <!-- 码点样式（高度紧凑） -->
     <div class="field">
       <label>码点样式 (Data Dots)</label>
       <div class="style-grid" id="dot-style-grid">
@@ -188,21 +193,21 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:16px 0}
         </div>
         <div class="style-option" data-val="capsule">
           <span class="opt-icon">💊</span>
-          <span class="opt-title">胶囊条块 (图1)</span>
+          <span class="opt-title">胶囊条块</span>
         </div>
         <div class="style-option" data-val="dots">
           <span class="opt-icon">⚫</span>
-          <span class="opt-title">精致圆点 (图2)</span>
+          <span class="opt-title">精致圆点</span>
         </div>
         <div class="style-option" data-val="fluid">
           <span class="opt-icon">💧</span>
-          <span class="opt-title">流体连通 (图3)</span>
+          <span class="opt-title">流体连通</span>
         </div>
       </div>
     </div>
 
-    <!-- 定位角眼样式选择器（截图图1、图2、图3） -->
-    <div class="field" style="margin-top:16px">
+    <!-- 定位角眼样式（高度紧凑） -->
+    <div class="field" style="margin-top:10px">
       <label>定位角眼样式 (Corner Eyes)</label>
       <div class="style-grid" id="eye-style-grid">
         <div class="style-option on" data-val="square">
@@ -211,15 +216,15 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:16px 0}
         </div>
         <div class="style-option" data-val="rounded">
           <span class="opt-icon">🔘</span>
-          <span class="opt-title">圆角方眼 (图1)</span>
+          <span class="opt-title">圆角方眼</span>
         </div>
         <div class="style-option" data-val="diamond">
           <span class="opt-icon">⭕</span>
-          <span class="opt-title">圆环菱心 (图2)</span>
+          <span class="opt-title">圆环菱心</span>
         </div>
         <div class="style-option" data-val="circle-dot">
           <span class="opt-icon">🎯</span>
-          <span class="opt-title">圆角实心 (图3)</span>
+          <span class="opt-title">圆角实心</span>
         </div>
       </div>
     </div>
@@ -280,30 +285,13 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:16px 0}
     </div>
     <div id="std-logo-strip" class="logo-strip" style="display:none">
       <img id="std-logo-preview" alt="logo">
-      <span style="font-size:.78rem;color:var(--text2)">已添加中心Logo</span>
+      <span style="font-size:.76rem;color:var(--text2)">已添加中心Logo</span>
       <span class="remove" onclick="clearStdLogo()">✕ 移除Logo</span>
     </div>
 
-    <div class="row r2" style="margin-top:12px">
+    <div class="row r2" style="margin-top:10px">
       <div class="field"><label class="chk"><input type="checkbox" id="std-outline"> 添加外边框</label></div>
       <div class="field"><label class="chk"><input type="checkbox" id="std-invert"> 反转颜色</label></div>
-    </div>
-  </div>
-
-  <!-- 预览与下载区 -->
-  <div class="preview-area on" id="std-preview-area">
-    <div class="qr-frame" id="std-frame">
-      <canvas id="std-canvas"></canvas>
-    </div>
-    <div class="dl-row">
-      <button class="dl-btn primary" onclick="dlStdPNG()">
-        <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        下载 PNG
-      </button>
-      <button class="dl-btn" onclick="shareStd()">
-        <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        分享
-      </button>
     </div>
   </div>
 </div>
@@ -499,38 +487,22 @@ function validateAll(){
   return valid;
 }
 
-// ═══════ 链接框 ═══════
-function updateLinkBox(d){
-  const b=document.getElementById('std-link-box'), v=document.getElementById('std-link-val');
-  if(!d){b.classList.remove('on');return}
-  v.textContent=d;
-  b.classList.add('on');
-}
-function copyLink(){
-  navigator.clipboard.writeText(document.getElementById('std-link-val').textContent).then(()=>{
-    const b=document.querySelector('#std-link-box .copy-btn');
-    b.textContent='已复制！';
-    setTimeout(()=>b.textContent='复制内容',1500);
-  });
-}
-
 // ═══════ 定位眼（Finder Pattern）判定 ═══════
 function isFinderPattern(r, c, N) {
-  // 3 个角上的 7x7 区域
   if (r < 7 && c < 7) return true; // 左上
   if (r < 7 && c >= N - 7) return true; // 右上
   if (r >= N - 7 && c < 7) return true; // 左下
   return false;
 }
 
-// ═══════ 核心绘制渲染器（支持截图样式） ═══════
+// ═══════ 核心绘制渲染器 ═══════
 function generateStandard(){
   const isValid=validateAll(), data=getStdData();
-  updateLinkBox(data);
   if(!data||!isValid){
-    document.getElementById('std-preview-area').classList.remove('on');
+    document.getElementById('std-preview-area').style.display='none';
     return;
   }
+  document.getElementById('std-preview-area').style.display='block';
   
   let fg=document.getElementById('std-fg').value, bg=document.getElementById('std-bg').value;
   if(document.getElementById('std-invert').checked)[fg,bg]=[bg,fg];
@@ -540,12 +512,12 @@ function generateStandard(){
   
   const qr=qrcode(0, ecc);
   try{qr.addData(data);qr.make()}catch{
-    document.getElementById('std-preview-area').classList.remove('on');
+    document.getElementById('std-preview-area').style.display='none';
     return;
   }
   
   const N=qr.getModuleCount(), canvas=document.getElementById('std-canvas');
-  const quiet=3; // 白边模块数
+  const quiet=3; // 白边
   const totalMod=N+quiet*2;
   const scale=Math.max(2, Math.floor(res/totalMod));
   const realSize=totalMod*scale;
@@ -557,7 +529,7 @@ function generateStandard(){
   
   const offset=quiet*scale;
   
-  // 1. 绘制普通数据码点（避开三个 7x7 角眼）
+  // 1. 绘制普通数据码点
   ctx.fillStyle=fg;
   for(let r=0; r<N; r++){
     for(let c=0; c<N; c++){
@@ -570,12 +542,10 @@ function generateStandard(){
       if(currentDotStyle==='square'){
         ctx.fillRect(x, y, scale, scale);
       } else if(currentDotStyle==='dots'){
-        // 独立正圆点 (图2)
         ctx.beginPath();
         ctx.arc(cx, cy, scale*0.42, 0, Math.PI*2);
         ctx.fill();
       } else if(currentDotStyle==='capsule'){
-        // 胶囊条块 (图1)
         const top=r>0&&qr.isDark(r-1,c)&&!isFinderPattern(r-1,c,N);
         const btm=r<N-1&&qr.isDark(r+1,c)&&!isFinderPattern(r+1,c,N);
         const left=c>0&&qr.isDark(r,c-1)&&!isFinderPattern(r,c-1,N);
@@ -594,16 +564,12 @@ function generateStandard(){
         );
         ctx.fill();
       } else if(currentDotStyle==='fluid'){
-        // 流体连通 (图3)
-        const rad=scale*0.48;
         ctx.beginPath();
         ctx.arc(cx, cy, scale*0.46, 0, Math.PI*2);
         ctx.fill();
-        // 与右边相连
         if(c<N-1 && qr.isDark(r,c+1) && !isFinderPattern(r,c+1,N)){
           ctx.fillRect(cx, cy - scale*0.35, scale, scale*0.7);
         }
-        // 与下边相连
         if(r<N-1 && qr.isDark(r+1,c) && !isFinderPattern(r+1,c,N)){
           ctx.fillRect(cx - scale*0.35, cy, scale*0.7, scale);
         }
@@ -611,13 +577,12 @@ function generateStandard(){
     }
   }
   
-  // 2. 绘制三个定位角眼 (Finder Eyes)
+  // 2. 绘制三个定位角眼
   const eyePositions=[
-    [0, 0],          // 左上
-    [0, N-7],        // 右上
-    [N-7, 0]         // 左下
+    [0, 0],
+    [0, N-7],
+    [N-7, 0]
   ];
-  
   eyePositions.forEach(([er, ec])=>{
     drawFinderEye(ctx, offset + ec*scale, offset + er*scale, scale, fg, bg, currentEyeStyle);
   });
@@ -643,26 +608,21 @@ function generateStandard(){
     ctx.drawImage(stdLogoImg, lx, ly, logoSize, logoSize);
   }
   
-  document.getElementById('std-preview-area').classList.add('on');
   window._stdCanvas=canvas;
 }
 
-// 绘制角眼
 function drawFinderEye(ctx, x, y, scale, fg, bg, style){
   const total=7*scale;
   const cx=x+total/2, cy=y+total/2;
-  
   ctx.fillStyle=fg;
   
   if(style==='square'){
-    // 经典方眼
     ctx.fillRect(x, y, total, total);
     ctx.fillStyle=bg;
     ctx.fillRect(x+scale, y+scale, 5*scale, 5*scale);
     ctx.fillStyle=fg;
     ctx.fillRect(x+2*scale, y+2*scale, 3*scale, 3*scale);
   } else if(style==='rounded'){
-    // 圆角方眼 (图1风格)
     ctx.beginPath();
     ctx.roundRect(x, y, total, total, scale*1.8);
     ctx.fill();
@@ -675,8 +635,6 @@ function drawFinderEye(ctx, x, y, scale, fg, bg, style){
     ctx.roundRect(x+2*scale, y+2*scale, 3*scale, 3*scale, scale*0.8);
     ctx.fill();
   } else if(style==='diamond'){
-    // 外圆环 + 内菱形 (图2风格)
-    // 外环
     ctx.beginPath();
     ctx.arc(cx, cy, total*0.48, 0, Math.PI*2);
     ctx.fill();
@@ -684,7 +642,6 @@ function drawFinderEye(ctx, x, y, scale, fg, bg, style){
     ctx.beginPath();
     ctx.arc(cx, cy, total*0.48 - scale, 0, Math.PI*2);
     ctx.fill();
-    // 内菱形
     ctx.fillStyle=fg;
     ctx.save();
     ctx.translate(cx, cy);
@@ -693,7 +650,6 @@ function drawFinderEye(ctx, x, y, scale, fg, bg, style){
     ctx.fillRect(-dSize/2, -dSize/2, dSize, dSize);
     ctx.restore();
   } else if(style==='circle-dot'){
-    // 圆角外框 + 正圆核心 (图3风格)
     ctx.beginPath();
     ctx.roundRect(x, y, total, total, scale*2.0);
     ctx.fill();
@@ -712,7 +668,7 @@ function drawFinderEye(ctx, x, y, scale, fg, bg, style){
 let genTimer=null;
 function liveGenerate(){
   clearTimeout(genTimer);
-  genTimer=setTimeout(generateStandard, 50);
+  genTimer=setTimeout(generateStandard, 40);
 }
 
 // 绑定输入监听
@@ -749,7 +705,6 @@ async function shareStd(){
   dlStdPNG();
 }
 
-// 初次加载渲染
 window.addEventListener('load', ()=>{
   checkContrast();
   liveGenerate();
