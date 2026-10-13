@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="version" content="2.0.2-20261013">
+<meta name="version" content="2.0.3-20261014">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>QR 工作室 — 极简二维码生成与美化</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +20,7 @@ body{min-height:100dvh;display:flex;flex-direction:column}
 input,select,textarea,button{font-family:inherit;font-size:inherit}
 ::selection{background:var(--accent);color:#fff}
 .shell{max-width:920px;margin:0 auto;padding:24px 20px 60px;width:100%}
-.workspace-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:18px;align-items:start}
+.workspace-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}
 .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 20px;text-align:center;position:sticky;top:20px}
 .hdr{text-align:center;padding:36px 0 24px;position:relative}
 .hdr h1{font-family:'JetBrains Mono',monospace;font-size:clamp(1.5rem,4vw,2rem);font-weight:600;letter-spacing:-.04em;margin-bottom:6px}
@@ -166,13 +166,80 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
     </div>
   </div>
 
-  <!-- 3. 双列并排区域：左侧美化参数，右侧生成二维码 -->
-  <div class="workspace-grid">
-    <!-- 左列：样式与美化卡片 -->
-    <div class="card" style="margin-bottom:0">
-      <div class="card-title">样式与美化</div>
+  <!-- 3. 全宽度：参数设置与颜色选择卡片（红框部分移至此，全宽度） -->
+  <div class="card">
+    <div class="card-title">参数与配色</div>
 
-      <!-- 码点样式（高度紧凑） -->
+    <!-- 纠错等级 / 导出分辨率 / 中心 Logo -->
+    <div class="row r3">
+      <div class="field">
+        <label>纠错等级</label>
+        <select class="inp" id="std-ecc">
+          <option value="L">低 (7%)</option>
+          <option value="M">中 (15%)</option>
+          <option value="Q">较高 (25%)</option>
+          <option value="H" selected>高 (30% Logo推荐)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>导出分辨率</label>
+        <select class="inp" id="std-res">
+          <option value="512" selected>512px (标清)</option>
+          <option value="1024">1024px (高清)</option>
+          <option value="2048">2048px (印刷)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>中心 Logo</label>
+        <div class="dz" id="std-logo-dz">
+          <span id="std-logo-prompt">点击上传图标</span>
+          <input type="file" id="std-logo-fi" accept="image/*">
+        </div>
+      </div>
+    </div>
+    <div id="std-logo-strip" class="logo-strip" style="display:none">
+      <img id="std-logo-preview" alt="logo">
+      <span style="font-size:.76rem;color:var(--text2)">已添加中心Logo</span>
+      <span class="remove" onclick="clearStdLogo()">✕ 移除Logo</span>
+    </div>
+
+    <div class="row r2" style="margin-top:10px">
+      <div class="field"><label class="chk"><input type="checkbox" id="std-outline"> 添加外边框</label></div>
+      <div class="field"><label class="chk"><input type="checkbox" id="std-invert"> 反转颜色</label></div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- 二维码颜色 / 背景颜色 -->
+    <div class="row r2">
+      <div class="field">
+        <label>二维码颜色</label>
+        <input type="color" class="inp" id="std-fg" value="#f97316">
+      </div>
+      <div class="field">
+        <label>背景颜色</label>
+        <input type="color" class="inp" id="std-bg" value="#ffffff">
+      </div>
+    </div>
+
+    <div class="presets" id="color-presets">
+      <div class="preset" title="灰橙" data-fg="#f97316" data-bg="#ffffff" style="background:#fff"><div class="fg" style="background:#f97316"></div></div>
+      <div class="preset" title="黑白" data-fg="#000000" data-bg="#ffffff" style="background:#fff"><div class="fg" style="background:#000"></div></div>
+      <div class="preset" title="深蓝" data-fg="#0284c7" data-bg="#ffffff" style="background:#fff"><div class="fg" style="background:#0284c7"></div></div>
+      <div class="preset" title="深青" data-fg="#0d9488" data-bg="#ffffff" style="background:#fff"><div class="fg" style="background:#0d9488"></div></div>
+      <div class="preset" title="暗夜" data-fg="#f4f4f5" data-bg="#18181b" style="background:#18181b"><div class="fg" style="background:#f4f4f5"></div></div>
+      <div class="preset" title="紫罗兰" data-fg="#7c3aed" data-bg="#ffffff" style="background:#fff"><div class="fg" style="background:#7c3aed"></div></div>
+    </div>
+    <div class="contrast-warn" id="contrast-warn">⚠️ 对比度过低，手机可能难以识别</div>
+  </div>
+
+  <!-- 4. 双列并排区域：左侧款式选择，右侧生成的二维码 -->
+  <div class="workspace-grid">
+    <!-- 左列：款式选择卡片 -->
+    <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;justify-content:center">
+      <div class="card-title">款式选择</div>
+
+      <!-- 码点样式 -->
       <div class="field">
         <label>码点样式 (Data Dots)</label>
         <div class="style-grid" id="dot-style-grid">
@@ -195,8 +262,8 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
         </div>
       </div>
 
-      <!-- 定位角眼样式（高度紧凑） -->
-      <div class="field" style="margin-top:10px">
+      <!-- 定位角眼样式 -->
+      <div class="field" style="margin-top:14px">
         <label>定位角眼样式 (Corner Eyes)</label>
         <div class="style-grid" id="eye-style-grid">
           <div class="style-option on" data-val="square">
@@ -217,75 +284,11 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
           </div>
         </div>
       </div>
-
-      <hr class="sep">
-
-      <!-- 对调部分 1：纠错等级 / 导出分辨率 / 中心 Logo 与边框（上移） -->
-      <div class="row r3">
-        <div class="field">
-          <label>纠错等级</label>
-          <select class="inp" id="std-ecc">
-            <option value="L">低 (7%)</option>
-            <option value="M">中 (15%)</option>
-            <option value="Q">较高 (25%)</option>
-            <option value="H" selected>高 (30% Logo推荐)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>导出分辨率</label>
-          <select class="inp" id="std-res">
-            <option value="512" selected>512px (标清)</option>
-            <option value="1024">1024px (高清)</option>
-            <option value="2048">2048px (印刷)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>中心 Logo</label>
-          <div class="dz" id="std-logo-dz">
-            <span id="std-logo-prompt">点击上传图标</span>
-            <input type="file" id="std-logo-fi" accept="image/*">
-          </div>
-        </div>
-      </div>
-      <div id="std-logo-strip" class="logo-strip" style="display:none">
-        <img id="std-logo-preview" alt="logo">
-        <span style="font-size:.76rem;color:var(--text2)">已添加中心Logo</span>
-        <span class="remove" onclick="clearStdLogo()">✕ 移除Logo</span>
-      </div>
-
-      <div class="row r2" style="margin-top:10px">
-        <div class="field"><label class="chk"><input type="checkbox" id="std-outline"> 添加外边框</label></div>
-        <div class="field"><label class="chk"><input type="checkbox" id="std-invert"> 反转颜色</label></div>
-      </div>
-
-      <hr class="sep">
-
-      <!-- 对调部分 2：颜色与配色预设（下移） -->
-      <div class="row r2">
-        <div class="field">
-          <label>二维码颜色</label>
-          <input type="color" class="inp" id="std-fg" value="#f97316">
-        </div>
-        <div class="field">
-          <label>背景颜色</label>
-          <input type="color" class="inp" id="std-bg" value="#ffffff">
-        </div>
-      </div>
-
-      <div class="presets" id="color-presets">
-        <div class="preset" title="灰橙" data-fg="#f97316" data-bg="#ffffff" style="background:#fff"><div class="fg" style="background:#f97316"></div></div>
-        <div class="preset" title="黑白" data-fg="#000000" data-bg="#ffffff" style="background:#fff"><div class="fg" style="background:#000"></div></div>
-        <div class="preset" title="深蓝" data-fg="#0284c7" data-bg="#ffffff" style="background:#fff"><div class="fg" style="background:#0284c7"></div></div>
-        <div class="preset" title="深青" data-fg="#0d9488" data-bg="#ffffff" style="background:#fff"><div class="fg" style="background:#0d9488"></div></div>
-        <div class="preset" title="暗夜" data-fg="#f4f4f5" data-bg="#18181b" style="background:#18181b"><div class="fg" style="background:#f4f4f5"></div></div>
-        <div class="preset" title="紫罗兰" data-fg="#7c3aed" data-bg="#ffffff" style="background:#fff"><div class="fg" style="background:#7c3aed"></div></div>
-      </div>
-      <div class="contrast-warn" id="contrast-warn">⚠️ 对比度过低，手机可能难以识别</div>
     </div>
 
-    <!-- 右列：生成的二维码展示与下载（支持随着左边滚动固定视口） -->
-    <div class="preview-card" id="std-preview-area">
-      <div class="card-title" style="margin-bottom:16px">实时效果预览</div>
+    <!-- 右列：生成的二维码展示与下载 -->
+    <div class="preview-card" id="std-preview-area" style="margin-bottom:0">
+      <div class="card-title" style="margin-bottom:14px">实时效果预览</div>
       <div class="qr-frame" id="std-frame">
         <canvas id="std-canvas"></canvas>
       </div>
