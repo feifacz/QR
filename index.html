@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="version" content="2.0.3-20261014">
+<meta name="version" content="2.0.4-20261014">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>QR 工作室 — 极简二维码生成与美化</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,13 +52,13 @@ input[type=color].inp{height:38px;padding:3px 5px;cursor:pointer}
 
 .dp{display:none}.dp.on{display:block}
 
-/* 紧凑平铺样式选择器 */
-.style-grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:8px;margin-top:4px}
-.style-option{border:1px solid var(--border);background:var(--bg);border-radius:var(--radius);padding:7px 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .18s;user-select:none}
-.style-option:hover{border-color:var(--text3)}
+/* 两行，每行 2 个大按钮 */
+.style-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.style-option{border:1px solid var(--border);background:var(--bg);border-radius:var(--radius);padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s;user-select:none}
+.style-option:hover{border-color:var(--text3);background:var(--surface2)}
 .style-option.on{border-color:var(--accent);background:var(--accent-glow);color:var(--accent);font-weight:600}
-.style-option .opt-icon{font-size:.95rem;line-height:1}
-.style-option .opt-title{font-size:.75rem;white-space:nowrap}
+.style-option .opt-icon{font-size:1.15rem;line-height:1}
+.style-option .opt-title{font-size:.82rem;white-space:nowrap}
 
 .presets{display:flex;gap:8px;margin-top:8px}
 .preset{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);cursor:pointer;position:relative;overflow:hidden;flex-shrink:0;transition:transform .15s}
