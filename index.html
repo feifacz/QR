@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="version" content="1.0.2-1000001">
+<meta name="version" content="1.0.3-1000002">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>QR 工作室 — 生成与品牌二维码</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -171,7 +171,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
         <div class="row r3"><div class="field"><label class="chk"><input type="checkbox" id="wifi-show-ssid" checked> 显示SSID</label></div><div class="field"><label class="chk"><input type="checkbox" id="wifi-show-pass"> 显示密码</label></div><div class="field"><label class="chk"><input type="checkbox" id="wifi-show-enc"> 显示加密方式</label></div></div>
       </div>
       <div class="dp" id="dp-email"><div class="field"><label>电子邮箱地址</label><input class="inp" id="em-to" placeholder="hello@example.com"><div class="val-msg" id="v-em-to"></div></div><div class="field"><label>主题</label><input class="inp" id="em-sub" placeholder="邮件主题"></div><div class="field"><label>正文</label><textarea class="inp" id="em-body" placeholder="邮件正文…"></textarea></div></div>
-      <div class="dp" id="dp-phone"><div class="field"><label>电话号码</label><div class="phone-row"><select class="inp" id="ph-cc"></select><input class="inp" id="in-phone" placeholder="138 0000 0000"></div><div class="val-msg" id="v-phone"></div></div></div>
+      <div class="dp" id="dp-phone"><div class="field"><label>电话号码 <span style="font-size:.74rem;color:var(--text3);font-weight:normal">(扫码自动唤起手机拨号盘，无需区号)</span></label><input class="inp" id="in-phone" placeholder="例如: 13800000000 或 021-12345678"><div class="val-msg" id="v-phone"></div></div></div>
       <div class="dp" id="dp-sms"><div class="field"><label>电话号码</label><div class="phone-row"><select class="inp" id="sms-cc"></select><input class="inp" id="sms-phone" placeholder="138 0000 0000"></div><div class="val-msg" id="v-sms-phone"></div></div><div class="field"><label>消息（可选）</label><textarea class="inp" id="sms-msg" placeholder="预填短信内容…"></textarea></div></div>
       <div class="dp" id="dp-whatsapp"><div class="field"><label>电话号码</label><div class="phone-row"><select class="inp" id="wa-cc"></select><input class="inp" id="wa-phone" placeholder="13800000000"></div><div class="val-msg" id="v-wa-phone"></div></div><div class="field"><label>预填消息（可选）</label><textarea class="inp" id="wa-msg" placeholder="Hi! I saw your site…"></textarea></div></div>
       <div class="dp" id="dp-location"><div class="field"><label>位置名称或地址</label><input class="inp" id="loc-name" placeholder="北京天安门"><div class="val-msg" id="v-loc"></div></div><div class="row r2"><div class="field"><label>纬度</label><input class="inp" id="loc-lat" placeholder="48.8584"></div><div class="field"><label>经度</label><input class="inp" id="loc-lng" placeholder="2.2945"></div></div></div>
@@ -357,6 +357,26 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
   特别感谢 <a href="https://github.com/VenimK" target="_blank">VenimK</a> ❤️
 </div>
 <script>
+// ═══════ 扫码拨号拦截与唤起 ═══════
+(function(){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    const callNum = params.get('call');
+    if(callNum){
+      window.location.href = 'tel:' + callNum;
+      window.addEventListener('DOMContentLoaded', () => {
+        document.body.innerHTML = '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#09090b;color:#fafafa;font-family:system-ui,-apple-system,sans-serif;text-align:center;">' +
+          '<div style="width:72px;height:72px;border-radius:50%;background:rgba(249,115,22,0.15);color:#f97316;display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:20px;">📞</div>' +
+          '<h2 style="font-size:1.35rem;margin-bottom:8px;font-weight:600;">呼叫电话</h2>' +
+          '<p style="color:#a1a1aa;font-size:1.1rem;margin-bottom:24px;font-family:monospace;letter-spacing:1px;">' + callNum + '</p>' +
+          '<a href="tel:' + callNum + '" style="background:#f97316;color:#fff;text-decoration:none;padding:13px 36px;border-radius:28px;font-weight:600;font-size:1.05rem;box-shadow:0 4px 14px rgba(249,115,22,0.35);display:inline-block;">立即呼叫</a>' +
+          '<p style="color:#71717a;font-size:0.8rem;margin-top:20px;">若未自动弹出拨号盘，请点击上方按钮</p>' +
+        '</div>';
+      });
+    }
+  }catch(e){}
+})();
+
 // ═══════ THEME ═══════
 function setTheme(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-light').classList.toggle('on',t==='light');document.getElementById('theme-dark').classList.toggle('on',t==='dark');try{localStorage.setItem('qr-theme',t)}catch{}}
 (()=>{try{const t=localStorage.getItem('qr-theme');if(t)setTheme(t)}catch{}})();
@@ -369,7 +389,7 @@ function setMode(m){document.querySelectorAll('.mode-btn').forEach(b=>b.classLis
 function flagEmoji(cc){return String.fromCodePoint(...cc.toUpperCase().split('').map(c=>127397+c.charCodeAt(0)))}
 const CC_RAW=[['CN','86','中国 (China)'],['HK','852','中国香港 (Hong Kong)'],['MO','853','中国澳门 (Macau)'],['TW','886','中国台湾 (Taiwan)'],['US','1','USA'],['GB','44','UK'],['CA','1','Canada'],['AU','61','Australia'],['AF','93','Afghanistan'],['AL','355','Albania'],['DZ','213','Algeria'],['AD','376','Andorra'],['AO','244','Angola'],['AR','54','Argentina'],['AM','374','Armenia'],['AT','43','Austria'],['AZ','994','Azerbaijan'],['BH','973','Bahrain'],['BD','880','Bangladesh'],['BY','375','Belarus'],['BE','32','Belgium'],['BZ','501','Belize'],['BJ','229','Benin'],['BT','975','Bhutan'],['BO','591','Bolivia'],['BA','387','Bosnia'],['BW','267','Botswana'],['BR','55','Brazil'],['BN','673','Brunei'],['BG','359','Bulgaria'],['KH','855','Cambodia'],['CM','237','Cameroon'],['CL','56','Chile'],['CO','57','Colombia'],['CR','506','Costa Rica'],['HR','385','Croatia'],['CU','53','Cuba'],['CY','357','Cyprus'],['CZ','420','Czech Republic'],['DK','45','Denmark'],['DO','1809','Dominican Rep.'],['EC','593','Ecuador'],['EG','20','Egypt'],['SV','503','El Salvador'],['EE','372','Estonia'],['ET','251','Ethiopia'],['FI','358','Finland'],['FR','33','France'],['GE','995','Georgia'],['DE','49','Germany'],['GH','233','Ghana'],['GR','30','Greece'],['GT','502','Guatemala'],['HT','509','Haiti'],['HN','504','Honduras'],['HU','36','Hungary'],['IS','354','Iceland'],['IN','91','India'],['ID','62','Indonesia'],['IR','98','Iran'],['IQ','964','Iraq'],['IE','353','Ireland'],['IL','972','Israel'],['IT','39','Italy'],['JM','1876','Jamaica'],['JP','81','Japan'],['JO','962','Jordan'],['KZ','7','Kazakhstan'],['KE','254','Kenya'],['KR','82','Korea (South)'],['KW','965','Kuwait'],['KG','996','Kyrgyzstan'],['LV','371','Latvia'],['LB','961','Lebanon'],['LY','218','Libya'],['LT','370','Lithuania'],['LU','352','Luxembourg'],['MY','60','Malaysia'],['MV','960','Maldives'],['MT','356','Malta'],['MX','52','Mexico'],['MD','373','Moldova'],['MC','377','Monaco'],['MN','976','Mongolia'],['ME','382','Montenegro'],['MA','212','Morocco'],['MZ','258','Mozambique'],['MM','95','Myanmar'],['NA','264','Namibia'],['NP','977','Nepal'],['NL','31','Netherlands'],['NZ','64','New Zealand'],['NI','505','Nicaragua'],['NG','234','Nigeria'],['MK','389','N. Macedonia'],['NO','47','Norway'],['OM','968','Oman'],['PK','92','Pakistan'],['PS','970','Palestine'],['PA','507','Panama'],['PY','595','Paraguay'],['PE','51','Peru'],['PH','63','Philippines'],['PL','48','Poland'],['PT','351','Portugal'],['PR','1787','Puerto Rico'],['QA','974','Qatar'],['RO','40','Romania'],['RU','7','Russia'],['SA','966','Saudi Arabia'],['SN','221','Senegal'],['RS','381','Serbia'],['SG','65','Singapore'],['SK','421','Slovakia'],['SI','386','Slovenia'],['SO','252','Somalia'],['ZA','27','South Africa'],['ES','34','Spain'],['LK','94','Sri Lanka'],['SD','249','Sudan'],['SE','46','Sweden'],['CH','41','Switzerland'],['TZ','255','Tanzania'],['TH','66','Thailand'],['TN','216','Tunisia'],['TR','90','Turkey'],['UA','380','Ukraine'],['AE','971','UAE'],['UY','598','Uruguay'],['UZ','998','Uzbekistan'],['VE','58','Venezuela'],['VN','84','Vietnam'],['YE','967','Yemen'],['ZM','260','Zambia'],['ZW','263','Zimbabwe']];
 function fillCC(sel){CC_RAW.forEach(([iso,code,name])=>{const o=document.createElement('option');o.value='+'+code;if(iso==='CN')o.selected=true;o.textContent=`${flagEmoji(iso)} +${code} ${name}`;sel.appendChild(o)});sel.value='+86'}
-['ph-cc','sms-cc','wa-cc','vc-cc'].forEach(id=>fillCC(document.getElementById(id)));
+['sms-cc','wa-cc','vc-cc'].forEach(id=>fillCC(document.getElementById(id)));
 
 // ═══════ TYPE PILLS ═══════
 document.getElementById('type-pills').onclick=e=>{const p=e.target.closest('.pill');if(!p)return;document.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');document.querySelectorAll('.dp').forEach(x=>x.classList.remove('on'));document.getElementById('dp-'+p.dataset.type).classList.add('on');liveGenerate()};
@@ -537,7 +557,7 @@ function generateStandard(){
 
 // ═══════ LIVE LISTENERS ═══════
 ['in-url','in-text','wifi-ssid','wifi-pass','em-to','em-sub','em-body','in-phone','sms-phone','sms-msg','wa-phone','wa-msg','loc-name','loc-lat','loc-lng','cal-title','cal-desc','cal-loc','cal-sd','cal-st','cal-ed','cal-et','vc-fn','vc-ln','vc-phone','vc-email','vc-org','vc-url','dn-gen-qrid','dn-gen-name','dn-gen-city','dn-gen-postal','dn-gen-amount','dn-gen-bill','dn-gen-store','dn-gen-ref','dn-gen-terminal'].forEach(id=>{const el=document.getElementById(id);if(el){el.addEventListener('input',liveGenerate);el.addEventListener('change',liveGenerate)}});
-['wifi-enc','ph-cc','sms-cc','wa-cc','vc-cc','std-ecc','std-res','std-tmpl','dn-gen-acquirer','dn-gen-mcc'].forEach(id=>document.getElementById(id).addEventListener('change',liveGenerate));
+['wifi-enc','sms-cc','wa-cc','vc-cc','std-ecc','std-res','std-tmpl','dn-gen-acquirer','dn-gen-mcc'].forEach(id=>document.getElementById(id).addEventListener('change',liveGenerate));
 ['wifi-hidden','cal-allday','std-outline','std-invert','wifi-show-ssid','wifi-show-pass','wifi-show-enc'].forEach(id=>document.getElementById(id).addEventListener('change',liveGenerate));
 document.getElementById('std-stroke').oninput=function(){document.getElementById('stroke-val').textContent=this.value+'%';liveGenerate()};
 
