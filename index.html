@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="version" content="1.0.5-1000004">
+<meta name="version" content="1.0.6-1000005">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>QR 工作室 — 生成与品牌二维码</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -172,7 +172,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
       </div>
       <div class="dp" id="dp-email"><div class="field"><label>电子邮箱地址</label><input class="inp" id="em-to" placeholder="hello@example.com"><div class="val-msg" id="v-em-to"></div></div><div class="field"><label>主题</label><input class="inp" id="em-sub" placeholder="邮件主题"></div><div class="field"><label>正文</label><textarea class="inp" id="em-body" placeholder="邮件正文…"></textarea></div></div>
       <div class="dp" id="dp-phone"><div class="field"><label>电话号码 <span style="font-size:.74rem;color:var(--text3);font-weight:normal">(扫码自动唤起手机拨号盘，无需区号)</span></label><input class="inp" id="in-phone" placeholder="例如: 13800000000 或 021-12345678"><div class="val-msg" id="v-phone"></div></div></div>
-      <div class="dp" id="dp-sms"><div class="field"><label>电话号码</label><input class="inp" id="sms-phone" placeholder="例如: 13800000000"><div class="val-msg" id="v-sms-phone"></div></div><div class="field"><label>消息（可选）</label><textarea class="inp" id="sms-msg" placeholder="预填短信内容…"></textarea></div></div>
+      <div class="dp" id="dp-sms"><div class="field"><label>电话号码 <span style="font-size:.74rem;color:var(--text3);font-weight:normal">(扫码自动唤起手机发短信界面，无需区号)</span></label><input class="inp" id="sms-phone" placeholder="例如: 13800000000"><div class="val-msg" id="v-sms-phone"></div></div><div class="field"><label>消息（可选）</label><textarea class="inp" id="sms-msg" placeholder="预填短信内容…"></textarea></div></div>
       <div class="dp" id="dp-whatsapp"><div class="field"><label>电话号码</label><div class="phone-row"><select class="inp" id="wa-cc"></select><input class="inp" id="wa-phone" placeholder="13800000000"></div><div class="val-msg" id="v-wa-phone"></div></div><div class="field"><label>预填消息（可选）</label><textarea class="inp" id="wa-msg" placeholder="Hi! I saw your site…"></textarea></div></div>
       <div class="dp" id="dp-location"><div class="field"><label>位置名称或地址</label><input class="inp" id="loc-name" placeholder="北京天安门"><div class="val-msg" id="v-loc"></div></div><div class="row r2"><div class="field"><label>纬度</label><input class="inp" id="loc-lat" placeholder="48.8584"></div><div class="field"><label>经度</label><input class="inp" id="loc-lng" placeholder="2.2945"></div></div></div>
       <div class="dp" id="dp-calendar"><div class="field"><label>事件标题</label><input class="inp" id="cal-title" placeholder="团队会议"><div class="val-msg" id="v-cal-title"></div></div><div class="field"><label>描述</label><textarea class="inp" id="cal-desc" placeholder="议程…"></textarea></div><div class="field"><label>地点</label><input class="inp" id="cal-loc" placeholder="会议室A"></div><div class="row r2"><div class="field"><label>开始日期</label><input class="inp" type="date" id="cal-sd"><div class="val-msg" id="v-cal-sd"></div></div><div class="field"><label>开始时间</label><input class="inp" type="time" id="cal-st"></div></div><div class="row r2"><div class="field"><label>结束日期</label><input class="inp" type="date" id="cal-ed"></div><div class="field"><label>结束时间</label><input class="inp" type="time" id="cal-et"></div></div><div class="field"><label class="chk"><input type="checkbox" id="cal-allday"> 全天事件</label></div></div>
@@ -357,11 +357,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
   特别感谢 <a href="https://github.com/VenimK" target="_blank">VenimK</a> ❤️
 </div>
 <script>
-// ═══════ 扫码拨号拦截与唤起 ═══════
+// ═══════ 扫码拨号/发短信拦截与唤起 ═══════
 (function(){
   try{
     const params = new URLSearchParams(window.location.search);
     const callNum = params.get('call');
+    const smsNum = params.get('sms');
+    const smsMsg = params.get('msg') || '';
     if(callNum){
       window.location.href = 'tel:' + callNum;
       window.addEventListener('DOMContentLoaded', () => {
@@ -371,6 +373,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
           '<p style="color:#a1a1aa;font-size:1.1rem;margin-bottom:24px;font-family:monospace;letter-spacing:1px;">' + callNum + '</p>' +
           '<a href="tel:' + callNum + '" style="background:#f97316;color:#fff;text-decoration:none;padding:13px 36px;border-radius:28px;font-weight:600;font-size:1.05rem;box-shadow:0 4px 14px rgba(249,115,22,0.35);display:inline-block;">立即呼叫</a>' +
           '<p style="color:#71717a;font-size:0.8rem;margin-top:20px;">若未自动弹出拨号盘，请点击上方按钮</p>' +
+        '</div>';
+      });
+    } else if(smsNum){
+      const isApple = /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
+      const sep = isApple ? '&body=' : '?body=';
+      const smsUri = 'sms:' + smsNum + (smsMsg ? sep + encodeURIComponent(smsMsg) : '');
+      window.location.href = smsUri;
+      window.addEventListener('DOMContentLoaded', () => {
+        let msgPreview = smsMsg ? '<div style="max-width:320px;margin:0 auto 24px;background:#18181b;border:1px solid #3f3f46;border-radius:12px;padding:12px 16px;text-align:left;font-size:.9rem;color:#fafafa;line-height:1.5;"><div style="font-size:.72rem;color:#71717a;margin-bottom:4px;">短信预填内容：</div>' + smsMsg.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>' : '';
+        document.body.innerHTML = '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#09090b;color:#fafafa;font-family:system-ui,-apple-system,sans-serif;text-align:center;">' +
+          '<div style="width:72px;height:72px;border-radius:50%;background:rgba(249,115,22,0.15);color:#f97316;display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:20px;">💬</div>' +
+          '<h2 style="font-size:1.35rem;margin-bottom:8px;font-weight:600;">发送短信</h2>' +
+          '<p style="color:#a1a1aa;font-size:1.1rem;margin-bottom:16px;font-family:monospace;letter-spacing:1px;">收件人：' + smsNum + '</p>' +
+          msgPreview +
+          '<a href="' + smsUri + '" style="background:#f97316;color:#fff;text-decoration:none;padding:13px 36px;border-radius:28px;font-weight:600;font-size:1.05rem;box-shadow:0 4px 14px rgba(249,115,22,0.35);display:inline-block;">立即发送短信</a>' +
+          '<p style="color:#71717a;font-size:0.8rem;margin-top:20px;">若未自动跳转至短信应用，请点击上方按钮</p>' +
         '</div>';
       });
     }
@@ -452,7 +470,7 @@ function getStdData(){
     case 'wifi':{const s=document.getElementById('wifi-ssid').value.trim();if(!s)return'';return`WIFI:T:${document.getElementById('wifi-enc').value};S:${s};P:${document.getElementById('wifi-pass').value};H:${document.getElementById('wifi-hidden').checked?'true':''};`}
     case 'email':{const to=document.getElementById('em-to').value.trim();if(!to)return'';return`mailto:${to}?subject=${encodeURIComponent(document.getElementById('em-sub').value)}&body=${encodeURIComponent(document.getElementById('em-body').value)}`}
     case 'phone':{const ph=document.getElementById('in-phone').value.trim().replace(/[\s\-\(\)]/g,'');return ph?`${location.origin}${location.pathname}?call=${encodeURIComponent(ph)}`:'';}
-    case 'sms':{const ph=document.getElementById('sms-phone').value.trim().replace(/[\s\-\(\)]/g,'');if(!ph)return'';const msg=document.getElementById('sms-msg').value;return msg?`sms:${ph}?body=${encodeURIComponent(msg)}`:`sms:${ph}`}
+    case 'sms':{const ph=document.getElementById('sms-phone').value.trim().replace(/[\s\-\(\)]/g,'');if(!ph)return'';const msg=document.getElementById('sms-msg').value.trim();let u=`${location.origin}${location.pathname}?sms=${encodeURIComponent(ph)}`;if(msg)u+=`&msg=${encodeURIComponent(msg)}`;return u}
     case 'whatsapp':{const cc=document.getElementById('wa-cc').value.replace('+',''),ph=document.getElementById('wa-phone').value.trim().replace(/[^0-9]/g,'');if(!ph)return'';const msg=document.getElementById('wa-msg').value.trim();let u=`https://wa.me/${cc}${ph}`;if(msg)u+=`?text=${encodeURIComponent(msg)}`;return u}
     case 'location':{const la=document.getElementById('loc-lat').value.trim(),ln=document.getElementById('loc-lng').value.trim(),n=document.getElementById('loc-name').value.trim();if(la&&ln)return`geo:${la},${ln}`;if(n)return`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(n)}`;return''}
     case 'calendar':{const t=document.getElementById('cal-title').value.trim();if(!t)return'';const allDay=document.getElementById('cal-allday').checked,sd=document.getElementById('cal-sd').value,st=document.getElementById('cal-st').value,ed=document.getElementById('cal-ed').value,et=document.getElementById('cal-et').value;const fmt=(d,ti)=>(d||'').replace(/-/g,'')+(allDay?'':'T'+(ti||'0000').replace(/:/g,'')+'00');let ics=`BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${t}`;const desc=document.getElementById('cal-desc').value,loc=document.getElementById('cal-loc').value;if(desc)ics+=`\nDESCRIPTION:${desc}`;if(loc)ics+=`\nLOCATION:${loc}`;if(sd)ics+=`\nDTSTART:${fmt(sd,st)}`;if(ed)ics+=`\nDTEND:${fmt(ed,et)}`;else if(sd)ics+=`\nDTEND:${fmt(sd,et||st)}`;return ics+'\nEND:VEVENT\nEND:VCALENDAR'}
