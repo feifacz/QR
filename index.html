@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="version" content="2.0.4-20261014">
+<meta name="version" content="2.0.5-20261014">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>QR 工作室 — 极简二维码生成与美化</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -296,6 +296,10 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
         <button class="dl-btn primary" onclick="dlStdPNG()">
           <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           下载 PNG
+        </button>
+        <button class="dl-btn" onclick="dlStdSVG()">
+          <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          下载 SVG
         </button>
         <button class="dl-btn" onclick="shareStd()">
           <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -619,6 +623,7 @@ function generateStandard(){
   }
   
   window._stdCanvas=canvas;
+  window._stdQR=qr; window._stdN=N; window._stdFg=fg; window._stdBg=bg; window._stdOutline=outline;
 }
 
 function drawFinderEye(ctx, x, y, scale, fg, bg, style){
@@ -695,6 +700,92 @@ function liveGenerate(){
 });
 
 // 下载与分享
+function dlStdSVG(){
+  if(!window._stdQR)return;
+  const qr=window._stdQR, N=window._stdN, fg=window._stdFg||'#000', bg=window._stdBg||'#fff', outline=window._stdOutline;
+  const quiet=3, totalMod=N+quiet*2, scale=10, size=totalMod*scale, offset=quiet*scale;
+  let paths='';
+
+  // 1. 数据码点
+  for(let r=0; r<N; r++){
+    for(let c=0; c<N; c++){
+      if(isFinderPattern(r, c, N)) continue;
+      if(!qr.isDark(r, c)) continue;
+      const x=offset+c*scale, y=offset+r*scale, cx=x+scale/2, cy=y+scale/2;
+      if(currentDotStyle==='square'){
+        paths+=`<rect x="${x}" y="${y}" width="${scale}" height="${scale}" fill="${fg}"/>`;
+      } else if(currentDotStyle==='dots'){
+        paths+=`<circle cx="${cx}" cy="${cy}" r="${scale*0.42}" fill="${fg}"/>`;
+      } else if(currentDotStyle==='capsule'){
+        const top=r>0&&qr.isDark(r-1,c)&&!isFinderPattern(r-1,c,N);
+        const btm=r<N-1&&qr.isDark(r+1,c)&&!isFinderPattern(r+1,c,N);
+        const left=c>0&&qr.isDark(r,c-1)&&!isFinderPattern(r,c-1,N);
+        const right=c<N-1&&qr.isDark(r,c+1)&&!isFinderPattern(r,c+1,N);
+        const rad=scale*0.42;
+        paths+=`<rect x="${x}" y="${y}" width="${scale}" height="${scale}" rx="${(!top&&!left)?rad:0}" ry="${(!top&&!left)?rad:0}" fill="${fg}"/>`;
+      } else if(currentDotStyle==='fluid'){
+        paths+=`<circle cx="${cx}" cy="${cy}" r="${scale*0.46}" fill="${fg}"/>`;
+        if(c<N-1 && qr.isDark(r,c+1) && !isFinderPattern(r,c+1,N)){
+          paths+=`<rect x="${cx}" y="${cy-scale*0.35}" width="${scale}" height="${scale*0.7}" fill="${fg}"/>`;
+        }
+        if(r<N-1 && qr.isDark(r+1,c) && !isFinderPattern(r+1,c,N)){
+          paths+=`<rect x="${cx-scale*0.35}" y="${cy}" width="${scale*0.7}" height="${scale}" fill="${fg}"/>`;
+        }
+      }
+    }
+  }
+
+  // 2. 定位角眼
+  const eyePositions=[[0,0],[0,N-7],[N-7,0]];
+  eyePositions.forEach(([er,ec])=>{
+    const ex=offset+ec*scale, ey=offset+er*scale, total=7*scale, cx=ex+total/2, cy=ey+total/2;
+    if(currentEyeStyle==='square'){
+      paths+=`<rect x="${ex}" y="${ey}" width="${total}" height="${total}" fill="${fg}"/>`;
+      paths+=`<rect x="${ex+scale}" y="${ey+scale}" width="${5*scale}" height="${5*scale}" fill="${bg}"/>`;
+      paths+=`<rect x="${ex+2*scale}" y="${ey+2*scale}" width="${3*scale}" height="${3*scale}" fill="${fg}"/>`;
+    } else if(currentEyeStyle==='rounded'){
+      paths+=`<rect x="${ex}" y="${ey}" width="${total}" height="${total}" rx="${scale*1.8}" ry="${scale*1.8}" fill="${fg}"/>`;
+      paths+=`<rect x="${ex+scale}" y="${ey+scale}" width="${5*scale}" height="${5*scale}" rx="${scale*1.2}" ry="${scale*1.2}" fill="${bg}"/>`;
+      paths+=`<rect x="${ex+2*scale}" y="${ey+2*scale}" width="${3*scale}" height="${3*scale}" rx="${scale*0.8}" ry="${scale*0.8}" fill="${fg}"/>`;
+    } else if(currentEyeStyle==='diamond'){
+      paths+=`<circle cx="${cx}" cy="${cy}" r="${total*0.48}" fill="${fg}"/>`;
+      paths+=`<circle cx="${cx}" cy="${cy}" r="${total*0.48-scale}" fill="${bg}"/>`;
+      const dSize=scale*2.2;
+      paths+=`<g transform="translate(${cx},${cy}) rotate(45)"><rect x="${-dSize/2}" y="${-dSize/2}" width="${dSize}" height="${dSize}" fill="${fg}"/></g>`;
+    } else if(currentEyeStyle==='circle-dot'){
+      paths+=`<rect x="${ex}" y="${ey}" width="${total}" height="${total}" rx="${scale*2.0}" ry="${scale*2.0}" fill="${fg}"/>`;
+      paths+=`<rect x="${ex+scale}" y="${ey+scale}" width="${5*scale}" height="${5*scale}" rx="${scale*1.4}" ry="${scale*1.4}" fill="${bg}"/>`;
+      paths+=`<circle cx="${cx}" cy="${cy}" r="${scale*1.6}" fill="${fg}"/>`;
+    }
+  });
+
+  // 3. 边框
+  if(outline){
+    const gap=Math.max(4, Math.round(size*0.015)), strokeW=Math.max(2, Math.round(size*0.01));
+    paths+=`<rect x="${gap}" y="${gap}" width="${size-gap*2}" height="${size-gap*2}" fill="none" stroke="${fg}" stroke-width="${strokeW}"/>`;
+  }
+
+  // 4. Logo (如存在)
+  if(stdLogoData){
+    const logoSize=(N*scale)*0.22, lx=offset+(N*scale-logoSize)/2, ly=offset+(N*scale-logoSize)/2, pad=logoSize*0.1;
+    paths+=`<rect x="${lx-pad}" y="${ly-pad}" width="${logoSize+pad*2}" height="${logoSize+pad*2}" rx="10" ry="10" fill="${bg}"/>`;
+    paths+=`<image href="${stdLogoData}" x="${lx}" y="${ly}" width="${logoSize}" height="${logoSize}"/>`;
+  }
+
+  const svg=`<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
+<rect width="100%" height="100%" fill="${bg}"/>
+${paths}
+</svg>`;
+
+  const blob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
+  const a=document.createElement('a');
+  a.download='qrcode-'+Date.now()+'.svg';
+  a.href=URL.createObjectURL(blob);
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+
 function dlStdPNG(){
   if(!window._stdCanvas)return;
   const a=document.createElement('a');
