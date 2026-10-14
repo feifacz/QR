@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="version" content="2.0.5-20261014">
+<meta name="version" content="2.0.6-20261014">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>QR 工作室 — 极简二维码生成与美化</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -130,7 +130,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
     <div class="dp on" id="dp-url">
       <div class="field">
         <label>网址链接 (URL)</label>
-        <input class="inp" id="in-url" placeholder="https://example.com" value="https://example.com">
+        <input class="inp" id="in-url" placeholder="https://example.com">
         <div class="val-msg" id="v-url"></div>
       </div>
     </div>
@@ -289,10 +289,15 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
     <!-- 右列：生成的二维码展示与下载 -->
     <div class="preview-card" id="std-preview-area" style="margin-bottom:0">
       <div class="card-title" style="margin-bottom:14px">实时效果预览</div>
-      <div class="qr-frame" id="std-frame">
+      <div class="qr-frame" id="std-frame" style="display:none">
         <canvas id="std-canvas"></canvas>
       </div>
-      <div class="dl-row">
+      <div id="std-empty-placeholder" style="padding:48px 16px;color:var(--text3);font-size:.84rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px;border:1px dashed var(--border);border-radius:var(--radius);margin-bottom:14px;">
+        <div style="font-size:2.2rem;margin-bottom:10px;opacity:0.4">⚡</div>
+        <div style="font-weight:500;color:var(--text2)">等待输入内容</div>
+        <div style="font-size:.75rem;color:var(--text3);margin-top:5px">在上方输入内容后即刻生成二维码</div>
+      </div>
+      <div class="dl-row" id="std-dl-row" style="display:none">
         <button class="dl-btn primary" onclick="dlStdPNG()">
           <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           下载 PNG
@@ -511,12 +516,19 @@ function isFinderPattern(r, c, N) {
 
 // ═══════ 核心绘制渲染器 ═══════
 function generateStandard(){
+  const frame=document.getElementById('std-frame');
+  const emptyPlaceholder=document.getElementById('std-empty-placeholder');
+  const dlRow=document.getElementById('std-dl-row');
   const isValid=validateAll(), data=getStdData();
+  
   if(!data||!isValid){
-    document.getElementById('std-preview-area').style.display='none';
+    window._stdQR=null;
+    window._stdCanvas=null;
+    if(frame)frame.style.display='none';
+    if(emptyPlaceholder)emptyPlaceholder.style.display='flex';
+    if(dlRow)dlRow.style.display='none';
     return;
   }
-  document.getElementById('std-preview-area').style.display='block';
   
   let fg=document.getElementById('std-fg').value, bg=document.getElementById('std-bg').value;
   if(document.getElementById('std-invert').checked)[fg,bg]=[bg,fg];
@@ -526,9 +538,17 @@ function generateStandard(){
   
   const qr=qrcode(0, ecc);
   try{qr.addData(data);qr.make()}catch{
-    document.getElementById('std-preview-area').style.display='none';
+    window._stdQR=null;
+    window._stdCanvas=null;
+    if(frame)frame.style.display='none';
+    if(emptyPlaceholder)emptyPlaceholder.style.display='flex';
+    if(dlRow)dlRow.style.display='none';
     return;
   }
+  
+  if(frame)frame.style.display='inline-block';
+  if(emptyPlaceholder)emptyPlaceholder.style.display='none';
+  if(dlRow)dlRow.style.display='flex';
   
   const N=qr.getModuleCount(), canvas=document.getElementById('std-canvas');
   const quiet=3; // 白边
