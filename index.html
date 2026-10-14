@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="version" content="2.0.6-20261014">
+<meta name="version" content="2.0.7-20261014">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>QR 工作室 — 极简二维码生成与美化</title>
+<title>极简二维码生成</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -13,22 +13,16 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root,[data-theme="dark"]{--bg:#09090b;--surface:#18181b;--surface2:#27272a;--border:#3f3f46;--text:#fafafa;--text2:#a1a1aa;--text3:#71717a;--accent:#f97316;--accent2:#fb923c;--accent-glow:rgba(249,115,22,.12);--qr-card-bg:#fff;--err:#ef4444;--ok:#22c55e;--warn:#f59e0b;--radius:10px;--radius-lg:16px}
-[data-theme="light"]{--bg:#f4f4f5;--surface:#fff;--surface2:#e4e4e7;--border:#d4d4d8;--text:#18181b;--text2:#52525b;--text3:#71717a;--accent:#ea580c;--accent2:#f97316;--accent-glow:rgba(234,88,12,.1);--qr-card-bg:#fff;--err:#dc2626;--ok:#16a34a;--warn:#d97706}
-html{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:15px;transition:background .3s,color .3s}
+:root{--bg:#f4f4f5;--surface:#ffffff;--surface2:#e4e4e7;--border:#d4d4d8;--text:#18181b;--text2:#52525b;--text3:#71717a;--accent:#f97316;--accent2:#fb923c;--accent-glow:rgba(249,115,22,.12);--qr-card-bg:#ffffff;--err:#dc2626;--ok:#16a34a;--warn:#d97706;--radius:10px;--radius-lg:16px}
+html{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:15px}
 body{min-height:100dvh;display:flex;flex-direction:column}
 input,select,textarea,button{font-family:inherit;font-size:inherit}
 ::selection{background:var(--accent);color:#fff}
 .shell{max-width:920px;margin:0 auto;padding:24px 20px 60px;width:100%}
 .workspace-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}
 .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 20px;text-align:center;position:sticky;top:20px}
-.hdr{text-align:center;padding:36px 0 24px;position:relative}
-.hdr h1{font-family:'JetBrains Mono',monospace;font-size:clamp(1.5rem,4vw,2rem);font-weight:600;letter-spacing:-.04em;margin-bottom:6px}
-.hdr h1 span{color:var(--accent)}
-.hdr p{color:var(--text2);font-size:.86rem}
-.theme-toggle{position:absolute;top:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px;display:flex;gap:2px}
-.theme-toggle button{width:30px;height:30px;border:none;border-radius:50%;background:transparent;cursor:pointer;font-size:.9rem;color:var(--text3);transition:all .2s;display:flex;align-items:center;justify-content:center}
-.theme-toggle button.on{background:var(--accent);color:#fff}
+.hdr{text-align:center;padding:32px 0 20px}
+.hdr h1{font-family:'JetBrains Mono',monospace;font-size:clamp(1.5rem,4vw,2rem);font-weight:600;letter-spacing:-.04em}
 
 .type-pills{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:2px}
 .pill{padding:8px 16px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:.82rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .2s;user-select:none}
@@ -106,12 +100,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
 
 <div class="shell">
   <div class="hdr">
-    <div class="theme-toggle">
-      <button onclick="setTheme('light')" id="theme-light">☀️</button>
-      <button class="on" onclick="setTheme('dark')" id="theme-dark">🌙</button>
-    </div>
-    <h1>QR <span>工作室</span></h1>
-    <p>极简二维码生成与美化</p>
+    <h1>极简二维码生成</h1>
   </div>
 
   <!-- 1. 类型选项卡 -->
@@ -316,7 +305,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
 </div>
 
 <div class="footer">
-  QR 工作室 · 简洁高效二维码生成工具
+  简洁高效二维码生成工具
 </div>
 
 <script>
@@ -330,10 +319,10 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
     if(callNum){
       window.location.href = 'tel:' + callNum;
       window.addEventListener('DOMContentLoaded', () => {
-        document.body.innerHTML = '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#09090b;color:#fafafa;font-family:system-ui,-apple-system,sans-serif;text-align:center;">' +
+        document.body.innerHTML = '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#f4f4f5;color:#18181b;font-family:system-ui,-apple-system,sans-serif;text-align:center;">' +
           '<div style="width:72px;height:72px;border-radius:50%;background:rgba(249,115,22,0.15);color:#f97316;display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:20px;">📞</div>' +
           '<h2 style="font-size:1.35rem;margin-bottom:8px;font-weight:600;">呼叫电话</h2>' +
-          '<p style="color:#a1a1aa;font-size:1.1rem;margin-bottom:24px;font-family:monospace;letter-spacing:1px;">' + callNum + '</p>' +
+          '<p style="color:#52525b;font-size:1.1rem;margin-bottom:24px;font-family:monospace;letter-spacing:1px;">' + callNum + '</p>' +
           '<a href="tel:' + callNum + '" style="background:#f97316;color:#fff;text-decoration:none;padding:13px 36px;border-radius:28px;font-weight:600;font-size:1.05rem;box-shadow:0 4px 14px rgba(249,115,22,0.35);display:inline-block;">立即呼叫</a>' +
           '<p style="color:#71717a;font-size:0.8rem;margin-top:20px;">若未自动弹出拨号盘，请点击上方按钮</p>' +
         '</div>';
@@ -344,11 +333,11 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
       const smsUri = 'sms:' + smsNum + (smsMsg ? sep + encodeURIComponent(smsMsg) : '');
       window.location.href = smsUri;
       window.addEventListener('DOMContentLoaded', () => {
-        let msgPreview = smsMsg ? '<div style="max-width:320px;margin:0 auto 24px;background:#18181b;border:1px solid #3f3f46;border-radius:12px;padding:12px 16px;text-align:left;font-size:.9rem;color:#fafafa;line-height:1.5;"><div style="font-size:.72rem;color:#71717a;margin-bottom:4px;">短信预填内容：</div>' + smsMsg.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>' : '';
-        document.body.innerHTML = '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#09090b;color:#fafafa;font-family:system-ui,-apple-system,sans-serif;text-align:center;">' +
+        let msgPreview = smsMsg ? '<div style="max-width:320px;margin:0 auto 24px;background:#ffffff;border:1px solid #d4d4d8;border-radius:12px;padding:12px 16px;text-align:left;font-size:.9rem;color:#18181b;line-height:1.5;"><div style="font-size:.72rem;color:#71717a;margin-bottom:4px;">短信预填内容：</div>' + smsMsg.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>' : '';
+        document.body.innerHTML = '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#f4f4f5;color:#18181b;font-family:system-ui,-apple-system,sans-serif;text-align:center;">' +
           '<div style="width:72px;height:72px;border-radius:50%;background:rgba(249,115,22,0.15);color:#f97316;display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:20px;">💬</div>' +
           '<h2 style="font-size:1.35rem;margin-bottom:8px;font-weight:600;">发送短信</h2>' +
-          '<p style="color:#a1a1aa;font-size:1.1rem;margin-bottom:16px;font-family:monospace;letter-spacing:1px;">收件人：' + smsNum + '</p>' +
+          '<p style="color:#52525b;font-size:1.1rem;margin-bottom:16px;font-family:monospace;letter-spacing:1px;">收件人：' + smsNum + '</p>' +
           msgPreview +
           '<a href="' + smsUri + '" style="background:#f97316;color:#fff;text-decoration:none;padding:13px 36px;border-radius:28px;font-weight:600;font-size:1.05rem;box-shadow:0 4px 14px rgba(249,115,22,0.35);display:inline-block;">立即发送短信</a>' +
           '<p style="color:#71717a;font-size:0.8rem;margin-top:20px;">若未自动跳转至短信应用，请点击上方按钮</p>' +
@@ -358,9 +347,8 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0}
   }catch(e){}
 })();
 
-// ═══════ 主题 ═══════
-function setTheme(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-light').classList.toggle('on',t==='light');document.getElementById('theme-dark').classList.toggle('on',t==='dark');try{localStorage.setItem('qr-theme',t)}catch{}}
-(()=>{try{const t=localStorage.getItem('qr-theme');if(t)setTheme(t)}catch{}})();
+// 清理历史可能残留的主题缓存
+try{localStorage.removeItem('qr-theme');}catch(e){}
 
 // ═══════ 类型切换 ═══════
 document.getElementById('type-pills').onclick=e=>{
